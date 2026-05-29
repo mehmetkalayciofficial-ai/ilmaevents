@@ -1,0 +1,18 @@
+# Local tooling
+.claude/
+.vercel/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+
+# Misc
+*.log
+temporary screenshots/
+*.tmp

@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="İlma Events — İstanbul ve Dubai'de evlilik teklifleri, doğum günü sürprizleri ve özel konsept etkinliklerin sessiz, zarif tasarımı.">
+<title>İlma Events — Anların Mimarı</title>
+
+<link rel="icon" type="image/png" href="assets/ilmalogo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Cormorant Garamond"', 'serif'],
+        sans: ['Manrope', 'sans-serif'],
+      },
+      colors: {
+        ivory: '#F4EBD6',
+        cream: '#EBE0C7',
+        bone: '#D9CBAA',
+        ink: '#171210',
+        espresso: '#0F0B08',
+        bronze: '#8E2E40',
+        champagne: '#A8425A',
+        rose: '#8E2E40',
+        'rose-dark': '#6B1F2E',
+        'rose-light': '#A8425A',
+        blush: '#D9A4B2',
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  :root{
+    /* New palette: BEIGE + ROSE + BLACK */
+    --ivory:#F4EBD6;        /* light beige (was ivory) */
+    --cream:#EBE0C7;        /* main beige */
+    --bone:#D9CBAA;         /* deeper beige */
+    --ink:#171210;          /* warm black */
+    --espresso:#0F0B08;     /* deeper black */
+    --bronze:#8E2E40;       /* deep rose (was bronze) */
+    --champagne:#A8425A;    /* light rose (was champagne) */
+    --rose:#8E2E40;
+    --rose-dark:#6B1F2E;
+    --rose-light:#A8425A;
+    --blush:#D9A4B2;        /* soft blush */
+    --radius-sm:12px;
+    --radius:20px;
+    --radius-lg:32px;
+  }
+
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+  html,body{
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    letter-spacing:0.01em;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--ink); color:var(--ivory); }
+
+  .font-display{ font-family:'Cormorant Garamond', serif; font-weight:400; letter-spacing:-0.02em; line-height:1; }
+  .font-display-italic{ font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:400; letter-spacing:-0.015em; }
+
+  .label{
+    font-family:'Manrope',sans-serif;
+    font-weight:500;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    font-size:0.68rem;
+  }
+
+  /* ----- (cursor removed) ----- */
+
+  /* ----- Grain overlay ----- */
+  .grain::before{
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:9000;
+    opacity:.6;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09  0 0 0 0 0.07  0 0 0 0 0.05  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;
+  }
+
+  /* ----- Loader ----- */
+  .loader{
+    position:fixed; inset:0;
+    background:var(--ink);
+    z-index:10000;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 1.2s cubic-bezier(.76,0,.24,1), opacity .8s;
+    transform-origin:top;
+  }
+  .loader.gone{
+    transform:translateY(-100%);
+    pointer-events:none;
+  }
+  .loader-line{
+    width:160px; height:1px;
+    background:rgba(196,168,120,0.2);
+    position:relative; overflow:hidden;
+  }
+  .loader-line::after{
+    content:''; position:absolute; inset:0;
+    background:var(--champagne);
+    transform:translateX(-100%);
+    animation:loadbar 2.2s cubic-bezier(.7,0,.3,1) forwards;
+  }
+  @keyframes loadbar{
+    0%{ transform:translateX(-100%); }
+    100%{ transform:translateX(100%); }
+  }
+
+  /* ----- Reveal animations ----- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 1.2s cubic-bezier(.16,1,.3,1), transform 1.2s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  .mask{ overflow:hidden; display:inline-block; }
+  .mask > *{
+    display:inline-block;
+    transform:translateY(110%);
+    transition:transform 1.4s cubic-bezier(.16,1,.3,1);
+  }
+  .mask.visible > *{ transform:translateY(0); }
+
+  .img-reveal{
+    position:relative; overflow:hidden;
+    border-radius:var(--radius);
+    box-shadow:
+      0 1px 2px rgba(22,19,16,0.04),
+      0 10px 28px -10px rgba(22,19,16,0.15);
+  }
+  .img-reveal::after{
+    content:''; position:absolute; inset:0;
+    background:var(--ivory);
+    transform-origin:right;
+    transform:scaleX(1);
+    transition:transform 1.6s cubic-bezier(.76,0,.24,1);
+    z-index:2;
+  }
+  .img-reveal.visible::after{ transform:scaleX(0); }
+  .img-reveal img{
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scale(1.2);
+    transition:transform 2s cubic-bezier(.16,1,.3,1);
+  }
+  .img-reveal.visible img{ transform:scale(1); }
+
+  /* ----- Hero ----- */
+  .hero-bg{
+    position:absolute; inset:-8% 0;
+    will-change:transform;
+    transform:translate3d(0,0,0);
+  }
+  .hero-bg-inner{
+    position:absolute; inset:0;
+    background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2400&q=80');
+    background-size:cover;
+    background-position:50% 30%;
+    filter:brightness(0.55) saturate(0.88) contrast(1.08);
+    animation:kenBurns 24s ease-in-out infinite alternate;
+    will-change:transform, background-position;
+  }
+  @keyframes kenBurns{
+    0%   { background-position: 50% 30%; transform: scale(1.05); }
+    100% { background-position: 53% 35%; transform: scale(1.12); }
+  }
+  .hero-bg::after{
+    content:''; position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(22,19,16,.5) 0%, rgba(22,19,16,.15) 35%, rgba(22,19,16,.6) 100%),
+      radial-gradient(ellipse 80% 60% at center, transparent 0%, rgba(22,19,16,0.55) 100%);
+    z-index:1;
+  }
+
+  /* ----- Buttons ----- */
+  .btn-luxe{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:1rem;
+    padding:1.05rem 2.2rem;
+    border:1px solid currentColor;
+    border-radius:999px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    font-weight:500;
+    overflow:hidden;
+    isolation:isolate;
+    cursor:pointer;
+    transition:color .55s cubic-bezier(.16,1,.3,1), border-color .55s cubic-bezier(.16,1,.3,1);
+  }
+  .btn-luxe::before{
+    content:''; position:absolute; inset:0; z-index:-1;
+    background:currentColor;
+    transform:translateY(101%);
+    transition:transform .65s cubic-bezier(.7,0,.2,1);
+  }
+  .btn-luxe:hover::before{ transform:translateY(0); }
+  .btn-luxe.dark:hover{ color:var(--ivory); }
+  .btn-luxe.dark:hover::before{ background:var(--ink); }
+  .btn-luxe.light:hover{ color:var(--ink); }
+  .btn-luxe.light:hover::before{ background:var(--ivory); }
+  .btn-luxe .arrow{
+    width:24px; height:1px; background:currentColor; position:relative;
+    transition:width .5s cubic-bezier(.16,1,.3,1);
+  }
+  .btn-luxe .arrow::after{
+    content:''; position:absolute; right:0; top:-3px;
+    width:6px; height:6px; border-right:1px solid currentColor; border-top:1px solid currentColor;
+    transform:rotate(45deg);
+  }
+  .btn-luxe:hover .arrow{ width:34px; }
+
+  /* ----- Marquee ----- */
+  .marquee{ display:flex; overflow:hidden; }
+  .marquee-track{
+    display:flex; gap:5rem; flex-shrink:0;
+    animation:marquee 38s linear infinite;
+    will-change:transform;
+  }
+  @keyframes marquee{
+    0%{ transform:translateX(0); }
+    100%{ transform:translateX(-50%); }
+  }
+
+  /* ----- Vertical text ----- */
+  .vert{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:0.62rem;
+    font-weight:500;
+  }
+
+  /* ----- Service rows ----- */
+  .service-row{
+    position:relative;
+    transition:background .6s ease;
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin-bottom:.4rem;
+  }
+  .service-row .service-bg{
+    position:absolute; inset:0;
+    opacity:0;
+    background-size:cover;
+    background-position:center;
+    transition:opacity .8s cubic-bezier(.16,1,.3,1);
+    pointer-events:none;
+    border-radius:var(--radius);
+  }
+  .service-row .service-bg::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, rgba(22,19,16,0.85), rgba(22,19,16,0.4));
+    border-radius:var(--radius);
+  }
+  .service-row:hover .service-bg{ opacity:1; }
+  .service-row .row-inner{ position:relative; z-index:2; transition:color .6s ease, padding .6s ease; }
+  .service-row:hover .row-inner{ color:var(--ivory); }
+  .service-row:hover .row-num{ color:var(--champagne); }
+  .service-row:hover .row-cta{ opacity:1; transform:translateX(0); }
+  .service-row .row-cta{
+    opacity:0;
+    transform:translateX(-12px);
+    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .service-row .row-line{
+    background:rgba(22,19,16,0.15);
+    transition:background .6s ease;
+  }
+  .service-row:hover .row-line{ background:rgba(244,238,227,0.25); }
+
+  /* ----- Portfolio tile hover ----- */
+  .tile{
+    position:relative; overflow:hidden;
+    border-radius:var(--radius);
+    box-shadow:
+      0 1px 2px rgba(22,19,16,0.04),
+      0 8px 24px -8px rgba(22,19,16,0.10);
+    transition:box-shadow .6s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .tile:hover{
+    box-shadow:
+      0 2px 6px rgba(22,19,16,0.05),
+      0 20px 50px -12px rgba(22,19,16,0.25);
+    transform:translateY(-4px);
+  }
+  .tile img{
+    width:100%; height:100%;
+    object-fit:cover;
+    transition:transform 1.4s cubic-bezier(.16,1,.3,1), filter 1.4s cubic-bezier(.16,1,.3,1);
+    will-change:transform;
+  }
+  .tile:hover img{ transform:scale(1.05); filter:brightness(0.92); }
+  .tile .tile-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(22,19,16,.65) 100%);
+    pointer-events:none;
+    border-radius:var(--radius);
+  }
+  .tile .tile-meta{
+    position:absolute; left:1.75rem; bottom:1.5rem; right:1.75rem;
+    color:var(--ivory);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1);
+  }
+  .tile:hover .tile-meta{ opacity:1; transform:translateY(0); }
+
+  /* ----- Form ----- */
+  .input-luxe{
+    background:transparent;
+    border:none;
+    border-bottom:1px solid rgba(22,19,16,0.25);
+    padding:1.1rem 0;
+    font-family:'Manrope',sans-serif;
+    font-size:0.88rem;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    transition:border-color .5s cubic-bezier(.16,1,.3,1);
+    width:100%;
+    border-radius:0;
+  }
+  .input-luxe:focus{ outline:none; border-color:var(--bronze); }
+  .input-luxe::placeholder{
+    color:rgba(22,19,16,0.4);
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-size:0.66rem;
+    font-weight:500;
+  }
+  select.input-luxe{
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23161310' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right .5rem center;
+  }
+
+  /* ----- Nav (glass) ----- */
+  .site-header{
+    background:transparent;
+    transition:background .5s cubic-bezier(.16,1,.3,1), backdrop-filter .5s, border-color .5s, box-shadow .5s, color .4s;
+    border-bottom:1px solid transparent;
+    color:rgba(244,235,214,0.95);
+  }
+  .site-header.scrolled{
+    background:rgba(244,235,214,0.55);
+    backdrop-filter:blur(22px) saturate(180%);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);
+    border-bottom-color:rgba(23,18,16,0.06);
+    color:var(--ink);
+    box-shadow:0 1px 0 rgba(23,18,16,0.02), 0 8px 32px -16px rgba(23,18,16,0.08);
+  }
+  .nav-logo{
+    transition:filter .4s cubic-bezier(.16,1,.3,1);
+  }
+  .site-header.scrolled .nav-logo{
+    filter:invert(1) brightness(.18);
+  }
+  .nav-link{ position:relative; color:currentColor; }
+  .nav-link::after{
+    content:''; position:absolute; left:0; bottom:-6px;
+    width:100%; height:1px;
+    background:currentColor;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .nav-link:hover::after{ transform:scaleX(1); }
+  .nav-cta{ color:currentColor; }
+
+  /* Menu button (hamburger / X) */
+  .menu-btn{ background:none; border:none; cursor:pointer; }
+  .menu-icon{
+    position:relative;
+    width:22px; height:14px;
+    display:block;
+  }
+  .menu-icon span{
+    position:absolute; left:0;
+    width:100%; height:1.5px;
+    background:currentColor;
+    transition:transform .5s cubic-bezier(.7,0,.2,1), top .4s cubic-bezier(.7,0,.2,1), width .4s ease;
+  }
+  .menu-icon span:nth-child(1){ top:3px; }
+  .menu-icon span:nth-child(2){ top:11px; width:70%; }
+  body.menu-open .menu-icon span:nth-child(1){
+    top:6.5px; transform:rotate(45deg);
+  }
+  body.menu-open .menu-icon span:nth-child(2){
+    top:6.5px; width:100%; transform:rotate(-45deg);
+  }
+
+  /* ----- Dot pulse ----- */
+  .dot-pulse{ position:relative; display:inline-flex; }
+  .dot-pulse::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--champagne);
+    box-shadow:0 0 0 0 rgba(196,168,120,0.5);
+    animation:pulse 2.2s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(196,168,120,0.5); }
+    70%{ box-shadow:0 0 0 14px rgba(196,168,120,0); }
+    100%{ box-shadow:0 0 0 0 rgba(196,168,120,0); }
+  }
+
+  /* ----- Logo color ----- */
+  .logo-dark{ filter:invert(1) brightness(.05); }
+
+  /* ----- Lenis defaults ----- */
+  html.lenis{ height:auto; }
+  .lenis.lenis-smooth{ scroll-behavior:auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior:contain; }
+  .lenis.lenis-stopped{ overflow:hidden; }
+
+  /* ----- Section number tag ----- */
+  .sect-tag{
+    display:flex; align-items:center; gap:.7rem;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:var(--bronze);
+    font-size:1rem;
+  }
+  .sect-tag::before{
+    content:''; width:30px; height:1px; background:var(--bronze);
+  }
+
+  /* ----- Subtle bg pattern ----- */
+  .bg-veil{
+    background-image:
+      radial-gradient(ellipse 800px 400px at 10% 0%, rgba(196,168,120,0.12), transparent 60%),
+      radial-gradient(ellipse 600px 500px at 90% 100%, rgba(196,168,120,0.08), transparent 60%);
+  }
+
+  /* ----- Mobile menu ----- */
+  .menu-panel{
+    position:fixed; inset:0;
+    background:var(--ink);
+    color:var(--ivory);
+    z-index:110;       /* below header (120) so close-X stays clickable */
+    display:flex; flex-direction:column;
+    padding:6.5rem 2rem 3rem;
+    transform:translateY(-100%);
+    transition:transform .85s cubic-bezier(.76,0,.24,1);
+    overflow-y:auto;
+    pointer-events:none;
+    visibility:hidden;
+  }
+  .menu-panel.open{
+    transform:translateY(0);
+    pointer-events:auto;
+    visibility:visible;
+  }
+  .menu-panel nav{
+    display:flex; flex-direction:column;
+    gap:.2rem;
+    margin-top:auto; margin-bottom:auto;
+  }
+  .menu-panel a{
+    display:block;
+    font-family:'Cormorant Garamond', serif;
+    font-size:clamp(2.4rem, 9vw, 4rem);
+    line-height:1.05;
+    padding:.4rem 0;
+    color:var(--ivory);
+    text-decoration:none;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1), color .3s;
+  }
+  .menu-panel a:hover{ color:var(--champagne); }
+  .menu-panel.open a{ opacity:1; transform:translateY(0); }
+  .menu-panel.open a:nth-child(1){ transition-delay:.20s; }
+  .menu-panel.open a:nth-child(2){ transition-delay:.27s; }
+  .menu-panel.open a:nth-child(3){ transition-delay:.34s; }
+  .menu-panel.open a:nth-child(4){ transition-delay:.41s; }
+  .menu-panel.open a:nth-child(5){ transition-delay:.48s; }
+  .menu-panel.open a:nth-child(6){ transition-delay:.55s; }
+
+  .menu-meta{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1) .55s, transform .8s cubic-bezier(.16,1,.3,1) .55s;
+  }
+  .menu-panel.open .menu-meta{ opacity:1; transform:translateY(0); }
+
+  /* When menu open, header bg goes solid dark and color is light */
+  body.menu-open .site-header{
+    background:transparent !important;
+    backdrop-filter:none !important;
+    color:var(--ivory) !important;
+    border-bottom-color:transparent !important;
+    box-shadow:none !important;
+  }
+  body.menu-open .site-header .nav-logo{ filter:none !important; }
+
+  /* lock scroll */
+  body.no-scroll, body.menu-open{ overflow:hidden; }
+
+  /* ----- Scroll progress ----- */
+  .scroll-progress{
+    position:fixed; top:0; left:0; right:0;
+    height:1.5px;
+    z-index:9999;
+    pointer-events:none;
+  }
+  .scroll-progress span{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg, transparent, var(--champagne), var(--bronze));
+    transform-origin:left;
+    transform:scaleX(0);
+    will-change:transform;
+  }
+
+  /* ----- Testimonial carousel ----- */
+  .testi-track{
+    display:flex;
+    gap:2rem;
+    will-change:transform;
+    transition:transform 1.2s cubic-bezier(.7,0,.2,1);
+  }
+  .testi-card{
+    flex:0 0 calc(50% - 1rem);
+    background:var(--ivory);
+    border:1px solid rgba(22,19,16,0.08);
+    padding:3rem 2.5rem;
+    position:relative;
+    border-radius:var(--radius);
+    box-shadow:
+      0 1px 2px rgba(22,19,16,0.03),
+      0 12px 32px -16px rgba(22,19,16,0.12);
+  }
+  @media (max-width: 768px){
+    .testi-card{ flex:0 0 calc(100% - 1rem); padding:2rem 1.5rem; }
+  }
+  .testi-card::before{
+    content:'"';
+    position:absolute;
+    top:1rem; left:1.5rem;
+    font-family:'Cormorant Garamond', serif;
+    font-size:6rem;
+    line-height:1;
+    color:var(--champagne);
+    opacity:.4;
+  }
+  .testi-arrow{
+    width:48px; height:48px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:999px;
+    border:1px solid rgba(23,18,16,0.18);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background .4s cubic-bezier(.16,1,.3,1), color .4s, border-color .4s, transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .testi-arrow:hover{
+    background:var(--ink);
+    color:var(--ivory);
+    border-color:var(--ink);
+    transform:translateY(-2px);
+  }
+  .testi-arrow:active{ transform:translateY(0); }
+
+  /* ----- FAQ accordion ----- */
+  .faq-item{
+    border-bottom:1px solid rgba(22,19,16,0.12);
+    overflow:hidden;
+  }
+  .faq-q{
+    width:100%;
+    text-align:left;
+    padding:1.8rem 0;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:2rem;
+    cursor:pointer;
+    background:none; border:none;
+    font-family:'Cormorant Garamond', serif;
+    font-size:clamp(1.3rem, 2.2vw, 1.9rem);
+    line-height:1.3;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+    transition:color .4s cubic-bezier(.16,1,.3,1);
+  }
+  .faq-q:hover{ color:var(--bronze); }
+  .faq-icon{
+    width:32px; height:32px;
+    flex-shrink:0;
+    position:relative;
+    transition:transform .6s cubic-bezier(.76,0,.24,1);
+  }
+  .faq-icon::before, .faq-icon::after{
+    content:'';
+    position:absolute;
+    background:currentColor;
+    top:50%; left:50%;
+    transition:transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .faq-icon::before{
+    width:14px; height:1px;
+    transform:translate(-50%,-50%);
+  }
+  .faq-icon::after{
+    width:1px; height:14px;
+    transform:translate(-50%,-50%);
+  }
+  .faq-item.open .faq-icon::after{ transform:translate(-50%,-50%) rotate(90deg); opacity:0; }
+  .faq-item.open .faq-icon{ transform:rotate(90deg); }
+  .faq-a{
+    max-height:0;
+    opacity:0;
+    transition:max-height .8s cubic-bezier(.76,0,.24,1), opacity .5s ease, padding .6s cubic-bezier(.76,0,.24,1);
+    padding:0 0;
+  }
+  .faq-item.open .faq-a{
+    max-height:600px;
+    opacity:1;
+    padding:0 0 2rem 0;
+  }
+  .faq-a-inner{
+    max-width:680px;
+    color:rgba(22,19,16,0.7);
+    line-height:1.75;
+  }
+
+  /* ----- Magnetic button wrap ----- */
+  .magnetic{
+    display:inline-block;
+    will-change:transform;
+    transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+
+  /* ----- Counter ----- */
+  .counter{ font-variant-numeric:tabular-nums; }
+
+  /* ----- Contact cards ----- */
+  .contact-card{
+    display:block;
+    position:relative;
+    padding:2.5rem 2rem;
+    background:var(--ivory);
+    color:var(--ink);
+    border:1px solid rgba(23,18,16,0.08);
+    border-radius:var(--radius);
+    box-shadow:
+      0 1px 2px rgba(23,18,16,0.03),
+      0 14px 36px -18px rgba(23,18,16,0.15);
+    transition:transform .55s cubic-bezier(.16,1,.3,1), box-shadow .55s cubic-bezier(.16,1,.3,1), background .4s;
+    overflow:hidden;
+  }
+  @media (min-width: 768px){ .contact-card{ padding:3rem 2.5rem; } }
+  .contact-card:hover{
+    transform:translateY(-6px);
+    box-shadow:
+      0 2px 6px rgba(23,18,16,0.05),
+      0 28px 60px -20px rgba(23,18,16,0.28);
+  }
+  .contact-card-dark{
+    background:var(--ink);
+    color:var(--ivory);
+    border-color:rgba(244,235,214,0.08);
+  }
+  .contact-card-rose{
+    background:linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+    color:#fff;
+    border-color:rgba(255,255,255,0.08);
+  }
+  .contact-arrow{
+    position:absolute; top:1.6rem; right:1.6rem;
+    width:42px; height:42px;
+    border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid currentColor;
+    opacity:.5;
+    transition:opacity .4s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1), background .4s;
+  }
+  .contact-card:hover .contact-arrow{
+    opacity:1;
+    transform:rotate(-45deg);
+  }
+</style>
+</head>
+<body class="grain">
+
+<!-- ===== Scroll progress ===== -->
+<div class="scroll-progress"><span id="scrollBar"></span></div>
+
+<!-- ===== Loader ===== -->
+<div class="loader" id="loader">
+  <div class="flex flex-col items-center gap-7">
+    <img src="assets/ilmalogo.png" alt="" class="h-14 w-auto opacity-90" />
+    <div class="loader-line"></div>
+    <p class="label text-white/40">İLMA · İSTANBUL · DUBAI</p>
+  </div>
+</div>
+
+<!-- ===== Mobile menu ===== -->
+<div class="menu-panel" id="menuPanel">
+  <nav>
+    <a href="#hikayemiz" data-close>Hikâye</a>
+    <a href="#hizmetler" data-close>Hizmetler</a>
+    <a href="#anlar" data-close>Anlar</a>
+    <a href="#sehirler" data-close>Şehirler</a>
+    <a href="#detaylar" data-close>Detaylar</a>
+    <a href="#iletisim" data-close>İletişim</a>
+  </nav>
+  <div class="menu-meta flex flex-col gap-3 text-white/55 text-sm pt-8 border-t border-white/10">
+    <a href="tel:+905326881810" class="hover:text-white" data-close>+90 532 688 18 10</a>
+    <a href="tel:+905342751913" class="hover:text-white" data-close>+90 534 275 19 13</a>
+    <a href="https://instagram.com/ilmaevents" target="_blank" rel="noopener" class="hover:text-white">Instagram · @ilmaevents</a>
+  </div>
+</div>
+
+<!-- ===== Nav ===== -->
+<header id="siteHeader" class="site-header fixed top-0 left-0 right-0 z-[120]">
+  <div class="max-w-[1760px] mx-auto px-5 md:px-10 py-4 md:py-5 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-3 nav-brand">
+      <img src="assets/ilmalogo.png" alt="İlma Events" class="h-8 md:h-10 w-auto nav-logo" />
+    </a>
+
+    <nav class="hidden md:flex items-center gap-9 label nav-links">
+      <a href="#hikayemiz" class="nav-link">Hikâye</a>
+      <a href="#hizmetler" class="nav-link">Hizmetler</a>
+      <a href="#anlar" class="nav-link">Anlar</a>
+      <a href="#sehirler" class="nav-link">Şehirler</a>
+      <a href="#detaylar" class="nav-link">Detaylar</a>
+      <a href="#iletisim" class="nav-link">İletişim</a>
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <a href="#iletisim" class="hidden md:inline-flex items-center gap-2.5 label nav-cta">
+        <span class="dot-pulse"></span>
+        <span>Randevu</span>
+      </a>
+      <button id="menuToggle" class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 menu-btn" aria-label="Menüyü aç">
+        <span class="menu-icon">
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ====================== HERO ====================== -->
+<section class="relative h-[100svh] min-h-[640px] overflow-hidden flex items-center justify-center text-white">
+  <div class="hero-bg"><div class="hero-bg-inner"></div></div>
+
+  <!-- Side rails -->
+  <div class="hidden md:block absolute left-8 top-1/2 -translate-y-1/2 vert text-white/55 z-10">İstanbul × Dubai · est mmxxi</div>
+  <div class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 vert text-white/55 z-10 items-center">— Anların Mimarı —</div>
+
+  <!-- Top right meta -->
+  <div class="hidden md:flex absolute top-32 right-10 z-10 flex-col items-end gap-2 text-white/60">
+    <p class="label">Şu an</p>
+    <p class="font-display text-3xl" id="liveTime">—</p>
+    <p class="label">İstanbul · GMT+3</p>
+  </div>
+
+  <!-- Bottom-left meta -->
+  <div class="hidden md:flex absolute bottom-10 left-10 z-10 flex-col gap-2 text-white/65 max-w-xs">
+    <p class="label">— Index</p>
+    <p class="font-display-italic text-lg leading-tight">"Bir an, doğru kurulduğunda sonsuza dek hatırlanır."</p>
+  </div>
+
+  <!-- Center content -->
+  <div class="relative z-10 text-center px-6 max-w-[1180px]">
+    <p class="label text-white/70 mb-10 reveal" style="transition-delay:.4s">— Anların Mimarı · İstanbul × Dubai —</p>
+
+    <h1 class="font-display text-[clamp(2.8rem,10vw,9rem)] leading-[0.92] tracking-[-0.025em]">
+      <span class="mask block"><span style="transition-delay:.5s">Özel anlar,</span></span>
+      <span class="mask block"><span class="font-display-italic" style="transition-delay:.7s">sonsuz</span></span>
+      <span class="mask block"><span style="transition-delay:.9s">hatıralar.</span></span>
+    </h1>
+
+    <p class="font-display-italic text-lg md:text-xl text-white/80 max-w-xl mx-auto mt-10 mb-12 reveal" style="transition-delay:1.2s">
+      Evlilik teklifleri, doğum günü sürprizleri ve özel konseptlerin
+      sessiz, zarif tasarımı — 2021'den bu yana.
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-6 reveal" style="transition-delay:1.4s">
+      <a href="#hizmetler" class="magnetic"><span class="btn-luxe light text-white">
+        <span>Hikâyemizi keşfet</span>
+        <span class="arrow"></span>
+      </span></a>
+      <a href="#iletisim" class="label text-white/70 hover:text-white border-b border-white/40 pb-1 inline-flex items-center gap-3">
+        <span>Bizimle konuş</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 text-white/55">
+    <div class="label text-[0.6rem]">Kaydırın</div>
+    <div class="w-px h-12 bg-gradient-to-b from-white/60 to-transparent"></div>
+  </div>
+</section>
+
+<!-- ====================== MARQUEE ====================== -->
+<section class="relative py-7 overflow-hidden border-y" style="border-color:rgba(22,19,16,0.12); background:var(--ivory)">
+  <div class="marquee">
+    <div class="marquee-track font-display text-[clamp(1.6rem,3vw,2.4rem)]" style="color:var(--ink)">
+      <span>Evlilik Teklifi</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span class="font-display-italic">Doğum Günü Sürprizi</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span>Özel Konseptler</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span class="font-display-italic">Yıldönümü</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span>Nikâh Sonrası</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+    </div>
+    <div class="marquee-track font-display text-[clamp(1.6rem,3vw,2.4rem)]" style="color:var(--ink)" aria-hidden="true">
+      <span>Evlilik Teklifi</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span class="font-display-italic">Doğum Günü Sürprizi</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span>Özel Konseptler</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span class="font-display-italic">Yıldönümü</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+      <span>Nikâh Sonrası</span>
+      <span class="font-display-italic" style="color:var(--bronze)">·</span>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== HIKAYEMIZ ====================== -->
+<section id="hikayemiz" class="relative py-32 md:py-44 px-6 md:px-12 bg-veil">
+  <div class="max-w-[1500px] mx-auto grid md:grid-cols-12 gap-12 md:gap-16">
+
+    <div class="md:col-span-5 md:sticky md:top-32 self-start space-y-8">
+      <div class="sect-tag reveal">01 — Hikâyemiz</div>
+      <div class="img-reveal aspect-[4/5] overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85" alt="" style="object-position:center 35%" />
+      </div>
+    </div>
+
+    <div class="md:col-span-7 md:col-start-7">
+      <p class="label text-ink/45 mb-6 reveal">Biz İlma'yız.</p>
+
+      <h2 class="font-display text-[clamp(2.2rem,5.3vw,4.7rem)] leading-[1.02] tracking-[-0.02em] mb-12">
+        <span class="mask block"><span>Bir an,</span></span>
+        <span class="mask block"><span style="transition-delay:.15s">doğru kurulduğunda</span></span>
+        <span class="mask block"><span class="font-display-italic" style="transition-delay:.3s; color:var(--bronze)">sonsuza dek</span></span>
+        <span class="mask block"><span style="transition-delay:.45s">hatırlanır.</span></span>
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-x-12 gap-y-6 text-ink/75 text-[1.02rem] max-w-2xl">
+        <p class="reveal">
+          İlma Events, 2021'den bu yana İstanbul ve Dubai'de hayatın en kıymetli anlarını tasarlıyor. Evlilik teklifleri, doğum günleri ve özel konseptler — her biri zarif bir dramaturji, her biri yalnızca size ait.
+        </p>
+        <p class="reveal" style="transition-delay:.1s">
+          Kalabalık törenlerin değil; mum ışığında bir kürsünün, denizden gelen bir mektubun, çiçeklerle döşenmiş bir terasın peşindeyiz. Mütevazı görünen büyük detayların.
+        </p>
+      </div>
+
+      <p class="font-display-italic text-2xl md:text-3xl mt-12 mb-16 reveal" style="color:var(--bronze)">
+        — Samimiyet, özen, yaratıcılık ve kusursuz icra.
+      </p>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 md:gap-10 max-w-xl border-t pt-10" style="border-color:rgba(23,18,16,0.15)">
+        <div class="reveal">
+          <p class="font-display text-[clamp(2.6rem,5vw,4rem)] leading-none" style="color:var(--rose)"><span class="counter" data-target="4">0</span></p>
+          <p class="text-[.72rem] tracking-[.18em] uppercase text-ink/55 mt-3 font-medium">Yıllık tecrübe</p>
+        </div>
+        <div class="reveal" style="transition-delay:.1s">
+          <p class="font-display text-[clamp(2.6rem,5vw,4rem)] leading-none" style="color:var(--rose)"><span class="counter" data-target="200">0</span>+</p>
+          <p class="text-[.72rem] tracking-[.18em] uppercase text-ink/55 mt-3 font-medium">Tasarlanmış an</p>
+        </div>
+        <div class="reveal" style="transition-delay:.2s">
+          <p class="font-display text-[clamp(2.6rem,5vw,4rem)] leading-none" style="color:var(--rose)"><span class="counter" data-target="2">0</span></p>
+          <p class="text-[.72rem] tracking-[.18em] uppercase text-ink/55 mt-3 font-medium">Şehir</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== HIZMETLER ====================== -->
+<section id="hizmetler" class="relative py-32 md:py-44 px-6 md:px-12" style="background:var(--cream)">
+  <div class="max-w-[1600px] mx-auto">
+
+    <div class="grid md:grid-cols-12 gap-8 mb-20 md:mb-28">
+      <div class="md:col-span-4">
+        <div class="sect-tag reveal">02 — Hizmetler</div>
+      </div>
+      <div class="md:col-span-8">
+        <h2 class="font-display text-[clamp(2.2rem,5.5vw,5rem)] leading-[1.02] tracking-[-0.02em]">
+          <span class="mask block"><span>Üç imza,</span></span>
+          <span class="mask block"><span class="font-display-italic" style="transition-delay:.15s; color:var(--bronze)">sayısız hikâye.</span></span>
+        </h2>
+        <p class="mt-8 max-w-xl text-ink/65 reveal" style="transition-delay:.3s">
+          Her hizmet kişiye özel kurgulanır; sahne, ışık, koku, çiçek, müzik — her ayrıntı sizin hikâyenize yazılır.
+        </p>
+      </div>
+    </div>
+
+    <!-- Service rows -->
+    <div class="border-t" style="border-color:rgba(22,19,16,0.18)">
+
+      <a href="#iletisim" class="service-row block group" data-bg="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1800&q=80">
+        <div class="service-bg" style="background-image:url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1800&q=80')"></div>
+        <div class="row-inner py-12 md:py-16 px-2 md:px-6 grid md:grid-cols-12 gap-6 md:gap-8 items-center text-ink">
+          <div class="md:col-span-1">
+            <span class="row-num font-display-italic text-3xl" style="color:var(--bronze)">i.</span>
+          </div>
+          <div class="md:col-span-5">
+            <h3 class="font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[1.02] tracking-[-0.02em]">Evlilik Teklifi</h3>
+          </div>
+          <div class="md:col-span-4 md:max-w-md">
+            <p class="text-current/75 leading-relaxed">
+              Hayatınızın en kıymetli sorusu için bir sahne. Şehir manzaralı bir teras, yaldızlı ışıklarla aydınlanmış bir koy ya da yalnızca sizin bildiğiniz bir nokta.
+            </p>
+          </div>
+          <div class="md:col-span-2 flex md:justify-end">
+            <span class="row-cta label inline-flex items-center gap-3">
+              <span>Keşfet</span>
+              <span class="w-8 h-px bg-current"></span>
+            </span>
+          </div>
+        </div>
+        <div class="row-line w-full h-px"></div>
+      </a>
+
+      <a href="#iletisim" class="service-row block group">
+        <div class="service-bg" style="background-image:url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1800&q=80')"></div>
+        <div class="row-inner py-12 md:py-16 px-2 md:px-6 grid md:grid-cols-12 gap-6 md:gap-8 items-center text-ink">
+          <div class="md:col-span-1">
+            <span class="row-num font-display-italic text-3xl" style="color:var(--bronze)">ii.</span>
+          </div>
+          <div class="md:col-span-5">
+            <h3 class="font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[1.02] tracking-[-0.02em]">Doğum Günü Sürprizleri</h3>
+          </div>
+          <div class="md:col-span-4 md:max-w-md">
+            <p class="text-current/75 leading-relaxed">
+              Beklenmedik bir an, kişiye özel bir senaryo. Kapı açıldığında karşılaşılan o ilk nefes — biz tam orada başlıyoruz.
+            </p>
+          </div>
+          <div class="md:col-span-2 flex md:justify-end">
+            <span class="row-cta label inline-flex items-center gap-3">
+              <span>Keşfet</span>
+              <span class="w-8 h-px bg-current"></span>
+            </span>
+          </div>
+        </div>
+        <div class="row-line w-full h-px"></div>
+      </a>
+
+      <a href="#iletisim" class="service-row block group">
+        <div class="service-bg" style="background-image:url('https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1800&q=80')"></div>
+        <div class="row-inner py-12 md:py-16 px-2 md:px-6 grid md:grid-cols-12 gap-6 md:gap-8 items-center text-ink">
+          <div class="md:col-span-1">
+            <span class="row-num font-display-italic text-3xl" style="color:var(--bronze)">iii.</span>
+          </div>
+          <div class="md:col-span-5">
+            <h3 class="font-display text-[clamp(2rem,4.2vw,3.6rem)] leading-[1.02] tracking-[-0.02em]">Özel Konseptler</h3>
+          </div>
+          <div class="md:col-span-4 md:max-w-md">
+            <p class="text-current/75 leading-relaxed">
+              Nikâh sonrası kutlamalar, yıldönümleri, kişiye özel temalı geceler. Hayalini kurduğunuz herhangi bir tablo — biz çerçeveliyoruz.
+            </p>
+          </div>
+          <div class="md:col-span-2 flex md:justify-end">
+            <span class="row-cta label inline-flex items-center gap-3">
+              <span>Keşfet</span>
+              <span class="w-8 h-px bg-current"></span>
+            </span>
+          </div>
+        </div>
+        <div class="row-line w-full h-px"></div>
+      </a>
+
+    </div>
+
+    <!-- Process -->
+    <div class="mt-28 md:mt-36 grid md:grid-cols-12 gap-8">
+      <div class="md:col-span-4">
+        <div class="sect-tag mb-6 reveal">Atölye Süreci</div>
+        <h3 class="font-display text-[clamp(1.8rem,3.2vw,2.8rem)] leading-[1.05] tracking-[-0.02em] reveal">
+          Dört adımda<br><em class="font-display-italic" style="color:var(--bronze)">sahne.</em>
+        </h3>
+      </div>
+      <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+        <div class="reveal">
+          <p class="font-display-italic text-3xl mb-4" style="color:var(--bronze)">01</p>
+          <p class="label mb-3">Keşif</p>
+          <p class="text-ink/70 text-sm leading-relaxed">Sizi, hikâyenizi ve hissi dinleriz.</p>
+        </div>
+        <div class="reveal" style="transition-delay:.1s">
+          <p class="font-display-italic text-3xl mb-4" style="color:var(--bronze)">02</p>
+          <p class="label mb-3">Konsept</p>
+          <p class="text-ink/70 text-sm leading-relaxed">Sahneyi, ışığı, kokuyu kurarız.</p>
+        </div>
+        <div class="reveal" style="transition-delay:.2s">
+          <p class="font-display-italic text-3xl mb-4" style="color:var(--bronze)">03</p>
+          <p class="label mb-3">Hazırlık</p>
+          <p class="text-ink/70 text-sm leading-relaxed">Mekânı, ekipleri, sürpriz akışını yönetiriz.</p>
+        </div>
+        <div class="reveal" style="transition-delay:.3s">
+          <p class="font-display-italic text-3xl mb-4" style="color:var(--bronze)">04</p>
+          <p class="label mb-3">An</p>
+          <p class="text-ink/70 text-sm leading-relaxed">Siz yaşarsınız, biz arka planda kalırız.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====================== ANLAR / PORTFOLIO ====================== -->
+<section id="anlar" class="relative py-32 md:py-44 px-6 md:px-12">
+  <div class="max-w-[1760px] mx-auto">
+
+    <div class="grid md:grid-cols-12 gap-8 mb-20">
+      <div class="md:col-span-4">
+        <div class="sect-tag reveal">03 — Seçili Anlar</div>
+      </div>
+      <div class="md:col-span-8 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <h2 class="font-display text-[clamp(2.2rem,5.5vw,5rem)] leading-[1.02] tracking-[-0.02em]">
+          <span class="mask block"><span>Birkaç</span></span>
+          <span class="mask block"><span class="font-display-italic" style="transition-delay:.15s; color:var(--bronze)">sessiz</span> <span style="transition-delay:.3s">kelime.</span></span>
+        </h2>
+        <a href="https://instagram.com/ilmaevents" target="_blank" rel="noopener" class="label text-ink/60 hover:text-ink inline-flex items-center gap-3 self-start md:self-end">
+          <span>Instagram'da daha fazla</span>
+          <span class="w-8 h-px bg-current"></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Gallery grid — symmetric 3×2 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 35%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Evlilik Teklifi · Boğaziçi</p>
+          <p class="font-display text-2xl leading-tight">"Mum ışığında, sessiz bir 'evet'."</p>
+        </div>
+      </div>
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 40%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Doğum Günü · Bebek</p>
+          <p class="font-display text-2xl leading-tight">"Yaldızlı bir gece."</p>
+        </div>
+      </div>
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 50%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Yıldönümü · İstanbul</p>
+          <p class="font-display text-2xl leading-tight">"Çiçeklerle örülmüş bir oda."</p>
+        </div>
+      </div>
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 50%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Özel Konsept · Dubai</p>
+          <p class="font-display text-2xl leading-tight">"Çölün altın saatinde."</p>
+        </div>
+      </div>
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 40%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Evlilik Teklifi · Anadoluhisarı</p>
+          <p class="font-display text-2xl leading-tight">"Boğaza karşı, yalnız bir sahne."</p>
+        </div>
+      </div>
+      <div class="tile img-reveal aspect-[4/5]">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1200&q=85" alt="" style="object-position:center 45%" />
+        <div class="tile-overlay"></div>
+        <div class="tile-meta">
+          <p class="label mb-2 text-white/80">Nikâh Sonrası · Bebek</p>
+          <p class="font-display text-2xl leading-tight">"İlk dans, son ışık."</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====================== PULL QUOTE ====================== -->
+<section class="relative py-28 md:py-40 px-6 md:px-12" style="background:var(--ink); color:var(--ivory)">
+  <div class="max-w-[1300px] mx-auto text-center">
+    <p class="label text-white/40 mb-10 reveal">— Düşünce</p>
+    <p class="font-display text-[clamp(2rem,4.8vw,4.2rem)] leading-[1.15] tracking-[-0.015em]">
+      <span class="mask block"><span>"Lüks, gösteriş değildir.</span></span>
+      <span class="mask block"><span class="font-display-italic" style="transition-delay:.15s; color:var(--champagne)">Doğru hissedilen bir sessizliktir.</span></span>
+      <span class="mask block"><span style="transition-delay:.3s">Biz onu sahneye taşıyoruz."</span></span>
+    </p>
+    <p class="label text-white/50 mt-10 reveal" style="transition-delay:.6s">İlma Studio</p>
+  </div>
+</section>
+
+<!-- ====================== SEHIRLER ====================== -->
+<section id="sehirler" class="relative py-32 md:py-44 px-6 md:px-12 overflow-hidden" style="background:var(--cream)">
+  <div class="max-w-[1600px] mx-auto">
+
+    <div class="grid md:grid-cols-12 gap-8 mb-20">
+      <div class="md:col-span-4">
+        <div class="sect-tag reveal">04 — Şehirler</div>
+      </div>
+      <div class="md:col-span-8">
+        <h2 class="font-display text-[clamp(2.2rem,5.5vw,5rem)] leading-[1.02] tracking-[-0.02em]">
+          <span class="mask block"><span>İki kıta,</span></span>
+          <span class="mask block"><span class="font-display-italic" style="transition-delay:.15s; color:var(--bronze)">aynı zarafet.</span></span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10 md:gap-12">
+      <!-- Istanbul -->
+      <div class="relative reveal city-card">
+        <div class="img-reveal aspect-[4/5] mb-8 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1400&q=85" alt="İstanbul" style="object-position:center 40%" />
+        </div>
+        <div class="flex items-start justify-between mb-4">
+          <p class="label text-ink/45">— Şehir 01</p>
+          <p class="label text-ink/45">41° 06' N · 29° 04' E</p>
+        </div>
+        <h3 class="font-display text-[clamp(3rem,6vw,5.5rem)] leading-none tracking-[-0.03em]">İstanbul</h3>
+        <p class="mt-6 text-ink/70 leading-relaxed max-w-md">
+          Boğaz'ın iki yakası, tarihi yalılar ve sessiz koylar: İstanbul'da kurduğumuz sahneler şehrin kendisiyle yarışır.
+        </p>
+        <div class="mt-8 space-y-2 label text-ink/70">
+          <p>Anadoluhisarı, İstanbul</p>
+          <a href="tel:+905326881810" class="block hover:text-ink">+90 532 688 18 10</a>
+          <a href="tel:+905326831810" class="block hover:text-ink">+90 532 683 18 10</a>
+        </div>
+      </div>
+
+      <!-- Dubai -->
+      <div class="relative reveal city-card" style="transition-delay:.15s">
+        <div class="img-reveal aspect-[4/5] mb-8 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1400&q=85" alt="Dubai" style="object-position:center 50%" />
+        </div>
+        <div class="flex items-start justify-between mb-4">
+          <p class="label text-ink/45">— Şehir 02</p>
+          <p class="label text-ink/45">25° 16' N · 55° 17' E</p>
+        </div>
+        <h3 class="font-display text-[clamp(3rem,6vw,5.5rem)] leading-none tracking-[-0.03em]">Dubai</h3>
+        <p class="mt-6 text-ink/70 leading-relaxed max-w-md">
+          Çölün altın saatinden gökdelenlerin tepelerine: Körfez'in zarafetiyle bizim sessiz mimarimiz.
+        </p>
+        <div class="mt-8 space-y-2 label text-ink/70">
+          <p>Madinat, Dubai</p>
+          <a href="tel:+905342751913" class="block hover:text-ink">+90 534 275 19 13</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== TESTIMONIALS ====================== -->
+<section id="sesler" class="relative py-32 md:py-44 px-6 md:px-12 overflow-hidden">
+  <div class="max-w-[1600px] mx-auto">
+
+    <div class="grid md:grid-cols-12 gap-8 mb-12 md:mb-16">
+      <div class="md:col-span-12">
+        <div class="sect-tag reveal mb-8">05 — Sesler</div>
+        <h2 class="font-display text-[clamp(2.2rem,5.5vw,5rem)] leading-[1.02] tracking-[-0.02em]">
+          <span class="mask block"><span>Onlar</span> <span class="font-display-italic" style="transition-delay:.15s; color:var(--rose)">yaşadı.</span></span>
+          <span class="mask block"><span style="transition-delay:.3s">Biz arka planda kaldık.</span></span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="relative">
+      <!-- Arrow controls -->
+      <div class="flex items-center justify-end gap-3 mb-8 reveal">
+        <button class="testi-arrow" id="testiPrev" aria-label="Önceki yorum">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2 4 7l5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="testi-arrow" id="testiNext" aria-label="Sonraki yorum">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="testi-track" id="testiTrack">
+        <article class="testi-card">
+          <p class="font-display-italic text-[clamp(1.4rem,2vw,1.9rem)] leading-[1.4] mb-10 mt-6 text-ink/85">
+            Hayatımızın en kıymetli sorusuna yakışan bir sahne kurdular. Mum ışığında, Boğaz'a karşı, sadece bizim bildiğimiz bir koyda — her detay özenle, her saniye yerli yerinde.
+          </p>
+          <div class="flex items-center gap-4 pt-6 border-t" style="border-color:rgba(22,19,16,0.1)">
+            <div class="w-10 h-10 rounded-full bg-cream flex items-center justify-center font-display text-bronze" style="background:var(--cream); color:var(--bronze)">E</div>
+            <div>
+              <p class="label">Ekin & Mert</p>
+              <p class="text-xs text-ink/50 mt-1">Evlilik Teklifi · Anadoluhisarı</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="testi-card">
+          <p class="font-display-italic text-[clamp(1.4rem,2vw,1.9rem)] leading-[1.4] mb-10 mt-6 text-ink/85">
+            Misafirlerimiz hâlâ konuşuyor. İlma sessizlikten muhteşemlik çıkarmayı biliyor — kalabalık bir sahne değil, yalnızca doğru hissedilen bir gece.
+          </p>
+          <div class="flex items-center gap-4 pt-6 border-t" style="border-color:rgba(22,19,16,0.1)">
+            <div class="w-10 h-10 rounded-full bg-cream flex items-center justify-center font-display text-bronze" style="background:var(--cream); color:var(--bronze)">A</div>
+            <div>
+              <p class="label">Ayşegül K.</p>
+              <p class="text-xs text-ink/50 mt-1">Doğum Günü · Dubai</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="testi-card">
+          <p class="font-display-italic text-[clamp(1.4rem,2vw,1.9rem)] leading-[1.4] mb-10 mt-6 text-ink/85">
+            Beklediğimiz değil — hayal ettiğimizin de ötesi. Bütün süreçte sakindiler, dağılmadılar, taşımadılar. Sadece an'ı çerçevelediler.
+          </p>
+          <div class="flex items-center gap-4 pt-6 border-t" style="border-color:rgba(22,19,16,0.1)">
+            <div class="w-10 h-10 rounded-full bg-cream flex items-center justify-center font-display text-bronze" style="background:var(--cream); color:var(--bronze)">Z</div>
+            <div>
+              <p class="label">Zeynep S.</p>
+              <p class="text-xs text-ink/50 mt-1">Yıldönümü · İstanbul</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="testi-card">
+          <p class="font-display-italic text-[clamp(1.4rem,2vw,1.9rem)] leading-[1.4] mb-10 mt-6 text-ink/85">
+            Bir konsept değil, bir his tasarladılar. Çiçekler, ışık, müzik — hepsi tek bir hikâyenin parçası gibiydi. Kelimelerle anlatılmaz.
+          </p>
+          <div class="flex items-center gap-4 pt-6 border-t" style="border-color:rgba(22,19,16,0.1)">
+            <div class="w-10 h-10 rounded-full bg-cream flex items-center justify-center font-display text-bronze" style="background:var(--cream); color:var(--bronze)">D</div>
+            <div>
+              <p class="label">Defne & Cem</p>
+              <p class="text-xs text-ink/50 mt-1">Özel Konsept · Bebek</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== DETAYLAR / FAQ ====================== -->
+<section id="detaylar" class="relative py-32 md:py-44 px-6 md:px-12" style="background:var(--cream)">
+  <div class="max-w-[1500px] mx-auto grid md:grid-cols-12 gap-12 md:gap-16">
+
+    <div class="md:col-span-4 md:sticky md:top-32 self-start space-y-8">
+      <div class="sect-tag reveal">06 — Detaylar</div>
+      <h2 class="font-display text-[clamp(2rem,4.5vw,4rem)] leading-[1.04] tracking-[-0.02em]">
+        <span class="mask block"><span>Merak</span></span>
+        <span class="mask block"><span class="font-display-italic" style="transition-delay:.15s; color:var(--bronze)">edilenler.</span></span>
+      </h2>
+      <p class="text-ink/65 leading-relaxed reveal max-w-sm" style="transition-delay:.3s">
+        Sorularınızın çoğunluğunu burada bulabilirsiniz. Aklınızdaki başka bir şey varsa, lütfen bizimle iletişime geçin.
+      </p>
+      <a href="#iletisim" class="magnetic">
+        <span class="btn-luxe dark text-ink">
+          <span>Bize Yazın</span>
+          <span class="arrow"></span>
+        </span>
+      </a>
+    </div>
+
+    <div class="md:col-span-7 md:col-start-6 border-t" style="border-color:rgba(22,19,16,0.12)">
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>En az ne kadar önceden iletişime geçmeliyiz?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          İdeal süre 4–6 haftadır. Konseptin derinleşmesi, mekân güvencesi ve sürpriz unsurunun kusursuz kurgusu için bu süre bize nefes alanı tanır. Daha kısa sürelerde de çalışıyoruz — ancak detayların özüne inmek için zamana ihtiyacımız var.
+        </div></div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Yurt dışında etkinlik düzenliyor musunuz?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Evet. Asıl üslerimiz İstanbul ve Dubai; ancak Avrupa, Akdeniz ve Körfez'deki birçok lokasyonda etkinlikler tasarladık. İlk görüşmede coğrafyanız ne olursa olsun konuşalım — bir yolunu buluyoruz.
+        </div></div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Bütçe aralığı nasıl belirlenir?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Her hikâye benzersiz; sabit bir paket sunmuyoruz. İlk görüşmede vizyonunuzu, mekânı, misafir sayısını ve dilediğiniz detayları konuşuruz — ardından şeffaf, kalemi kalemine ayrı bir teklif hazırlarız. Bütçe değil, his merkezde.
+        </div></div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Sürpriz unsurunu nasıl koruyorsunuz?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Süreç boyunca tek bir gizli iletişim kanalı kuruyoruz. Tüm ekibimiz NDA imzalı. Mekân giriş–çıkışları sessiz saatlerde yapılır, kurulum siz orada değilken tamamlanır. Misafirlerinizin telefonları bile haberi olmadan kapı açıldığında "ilk an"ı bulur.
+        </div></div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Tasarım sürecinde nasıl dahil oluyoruz?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          İlk görüşmenin ardından bir mood board ve sahne taslağı sunuyoruz. İki revizyon hakkınız var; ardından üretime geçiyoruz. Etkinliğe 72 saat kala, son detaylar için tek bir final görüşme yapıyoruz — sonrasında geri çekiliyor, arka planda kalıyoruz.
+        </div></div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Fotoğraf ve video çekimi dahil mi?</span>
+          <span class="faq-icon"></span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Evet — birlikte çalıştığımız belgesel tarzı fotoğrafçı ve sinema yönetmeni ekibi var. Pozlu çekim değil, anın doğal akışını yakalayan bir gözle. Dilerseniz kendi fotoğrafçınızla da çalışabiliriz.
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== ILETISIM ====================== -->
+<section id="iletisim" class="relative py-32 md:py-44 px-6 md:px-12 bg-veil">
+  <div class="max-w-[1400px] mx-auto">
+
+    <div class="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+      <div class="sect-tag reveal justify-center" style="justify-content:center">07 — İletişim</div>
+      <h2 class="font-display text-[clamp(2.4rem,5.5vw,5rem)] leading-[1.02] tracking-[-0.02em] mt-8 mb-8">
+        <span class="mask block"><span>Hayalinizi</span> <span class="font-display-italic" style="transition-delay:.15s; color:var(--rose)">sahneye</span> <span style="transition-delay:.3s">taşıyalım.</span></span>
+      </h2>
+      <p class="text-ink/70 leading-relaxed reveal max-w-xl mx-auto" style="transition-delay:.4s">
+        Bizi doğrudan arayabilir veya Instagram üzerinden mesaj atabilirsiniz.
+      </p>
+    </div>
+
+    <!-- Contact cards -->
+    <div class="grid md:grid-cols-2 gap-5 md:gap-6 max-w-[1100px] mx-auto">
+      <a href="tel:+905326881810" class="contact-card reveal">
+        <p class="label text-ink/55 mb-3">— İstanbul</p>
+        <p class="font-display text-[clamp(1.8rem,3.2vw,2.8rem)] leading-none tracking-[-0.01em]">+90 532 688 18 10</p>
+        <p class="mt-4 text-ink/55 text-sm">Anadoluhisarı · 09:00 — 22:00</p>
+        <span class="contact-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M11 3H4M11 3v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+      </a>
+      <a href="tel:+905342751913" class="contact-card reveal" style="transition-delay:.1s">
+        <p class="label text-ink/55 mb-3">— Dubai</p>
+        <p class="font-display text-[clamp(1.8rem,3.2vw,2.8rem)] leading-none tracking-[-0.01em]">+90 534 275 19 13</p>
+        <p class="mt-4 text-ink/55 text-sm">Madinat · 24/7</p>
+        <span class="contact-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M11 3H4M11 3v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+      </a>
+
+      <a href="https://instagram.com/ilmaevents" target="_blank" rel="noopener" class="contact-card contact-card-dark reveal" style="transition-delay:.2s">
+        <p class="label text-white/55 mb-3">— Instagram</p>
+        <p class="font-display text-[clamp(1.8rem,3.2vw,2.8rem)] leading-none tracking-[-0.01em]">@ilmaevents</p>
+        <p class="mt-4 text-white/55 text-sm">İlham, anlar ve sahne arkası</p>
+        <span class="contact-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M11 3H4M11 3v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      </a>
+      <a href="https://wa.me/905326881810" target="_blank" rel="noopener" class="contact-card contact-card-rose reveal" style="transition-delay:.3s">
+        <p class="label text-white/65 mb-3">— WhatsApp</p>
+        <p class="font-display text-[clamp(1.8rem,3.2vw,2.8rem)] leading-none tracking-[-0.01em]">Hemen Yazın</p>
+        <p class="mt-4 text-white/65 text-sm">7/24 mesaj atabilirsiniz</p>
+        <span class="contact-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M11 3H4M11 3v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="relative px-6 md:px-12 pt-20 pb-10" style="background:var(--ink); color:var(--ivory)">
+  <div class="max-w-[1760px] mx-auto">
+
+    <div class="grid md:grid-cols-12 gap-10 mb-16 pt-2">
+      <div class="md:col-span-4 space-y-5">
+        <img src="assets/ilmalogo.png" class="h-10 w-auto mb-2" alt="İlma Events" />
+        <p class="text-white/55 text-sm leading-relaxed max-w-xs">
+          Anların mimarı. Sessiz, zarif, yalnızca sizin için tasarlanmış.
+        </p>
+        <p class="label text-white/35">— İstanbul × Dubai</p>
+      </div>
+
+      <div class="md:col-span-2">
+        <p class="label text-white/40 mb-6">Bağlantılar</p>
+        <ul class="space-y-3">
+          <li><a href="#hikayemiz" class="text-white/85 hover:text-white">Hikâyemiz</a></li>
+          <li><a href="#hizmetler" class="text-white/85 hover:text-white">Hizmetler</a></li>
+          <li><a href="#anlar" class="text-white/85 hover:text-white">Anlar</a></li>
+          <li><a href="#sehirler" class="text-white/85 hover:text-white">Şehirler</a></li>
+          <li><a href="#detaylar" class="text-white/85 hover:text-white">Detaylar</a></li>
+          <li><a href="#iletisim" class="text-white/85 hover:text-white">İletişim</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <p class="label text-white/40 mb-6">İletişim</p>
+        <ul class="space-y-3 text-white/85">
+          <li>Anadoluhisarı, İstanbul</li>
+          <li>Madinat, Dubai</li>
+          <li><a href="tel:+905326881810" class="hover:text-white">+90 532 688 18 10</a></li>
+          <li><a href="tel:+905342751913" class="hover:text-white">+90 534 275 19 13</a></li>
+          <li><a href="mailto:hello@ilmaevents.com" class="hover:text-white">hello@ilmaevents.com</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <p class="label text-white/40 mb-6">Sosyal</p>
+        <ul class="space-y-3 text-white/85">
+          <li><a href="https://instagram.com/ilmaevents" target="_blank" rel="noopener" class="hover:text-white inline-flex items-center gap-3"><span>Instagram</span><span class="w-6 h-px bg-white/40"></span></a></li>
+          <li><a href="#" class="hover:text-white inline-flex items-center gap-3"><span>Facebook</span><span class="w-6 h-px bg-white/40"></span></a></li>
+          <li><a href="https://wa.me/905326881810" target="_blank" rel="noopener" class="hover:text-white inline-flex items-center gap-3"><span>WhatsApp</span><span class="w-6 h-px bg-white/40"></span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-white/35 label border-t border-white/10 pt-8">
+      <p>© <span id="year">MMXXVI</span> · İlma Events</p>
+      <p>Tüm hakları saklıdır.</p>
+      <p>İstanbul × Dubai · Anların Mimarı</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ====================== JS ====================== -->
+<script>
+  // Lenis silky scroll
+  const lenis = new Lenis({
+    duration: 1.5,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.4,
+  });
+  function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+
+  // Hero parallax (transform only, GPU). Outer wrapper handles translate; inner does scale animation.
+  const heroBg = document.querySelector('.hero-bg');
+  let lastScroll = 0;
+  lenis.on('scroll', ({ scroll }) => {
+    lastScroll = scroll;
+    if (heroBg && scroll < window.innerHeight * 1.3) {
+      const y = scroll * 0.32;
+      heroBg.style.transform = `translate3d(0, ${y}px, 0)`;
+    }
+  });
+
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('gone'), 1400);
+  });
+
+  // (custom cursor removed)
+
+  // Reveal observer
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal, .mask, .img-reveal').forEach(el => io.observe(el));
+
+  // Anchor navigation via Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#' || !id) return;
+      const el = document.querySelector(id);
+      if (el) {
+        e.preventDefault();
+        lenis.scrollTo(el, { duration: 1.6, offset: -20 });
+        document.getElementById('menuPanel').classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      }
+    });
+  });
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const menuPanel = document.getElementById('menuPanel');
+  function openMenu(){
+    menuPanel.classList.add('open');
+    document.body.classList.add('menu-open');
+    menuToggle.setAttribute('aria-label', 'Menüyü kapat');
+  }
+  function closeMenu(){
+    menuPanel.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-label', 'Menüyü aç');
+  }
+  menuToggle?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (menuPanel.classList.contains('open')) closeMenu(); else openMenu();
+  });
+  document.querySelectorAll('[data-close]').forEach(a => {
+    a.addEventListener('click', () => closeMenu());
+  });
+  // close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuPanel.classList.contains('open')) closeMenu();
+  });
+
+  // Header glass on scroll
+  const header = document.getElementById('siteHeader');
+  function updateHeader(scroll){
+    if (header) header.classList.toggle('scrolled', scroll > 80);
+  }
+  updateHeader(window.scrollY || 0);
+  lenis.on('scroll', ({ scroll }) => updateHeader(scroll));
+
+  // Live clock (Istanbul)
+  function updateClock(){
+    const now = new Date();
+    const opts = { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Istanbul', hour12:false };
+    const t = new Intl.DateTimeFormat('tr-TR', opts).format(now);
+    const el = document.getElementById('liveTime');
+    if (el) el.textContent = t;
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // ---------- Scroll progress bar ----------
+  const scrollBar = document.getElementById('scrollBar');
+  lenis.on('scroll', ({ scroll }) => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.min(1, scroll / max) : 0;
+    if (scrollBar) scrollBar.style.transform = `scaleX(${pct})`;
+  });
+
+  // ---------- Number counter ----------
+  const counterIo = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.target, 10);
+      const pad = parseInt(el.dataset.pad || '0', 10);
+      const dur = 1400;
+      const start = performance.now();
+      const easeOut = t => 1 - Math.pow(1 - t, 3);
+      function tick(now){
+        const p = Math.min(1, (now - start) / dur);
+        const v = Math.round(easeOut(p) * target);
+        el.textContent = pad ? String(v).padStart(pad, '0') : String(v);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      counterIo.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.counter').forEach(c => counterIo.observe(c));
+
+  // ---------- Testimonial carousel ----------
+  const testiTrack = document.getElementById('testiTrack');
+  const testiPrev = document.getElementById('testiPrev');
+  const testiNext = document.getElementById('testiNext');
+  let testiIndex = 0;
+  function getTestiCount(){
+    if (!testiTrack) return 0;
+    const cards = testiTrack.querySelectorAll('.testi-card');
+    const perView = window.innerWidth >= 768 ? 2 : 1;
+    return Math.max(1, cards.length - perView + 1);
+  }
+  function goTesti(i){
+    const count = getTestiCount();
+    if (count <= 0) return;
+    testiIndex = ((i % count) + count) % count;
+    if (testiTrack){
+      const card = testiTrack.querySelector('.testi-card');
+      const step = card ? (card.getBoundingClientRect().width + 32) : 0;
+      testiTrack.style.transform = `translateX(-${testiIndex * step}px)`;
+    }
+  }
+  testiPrev?.addEventListener('click', () => goTesti(testiIndex - 1));
+  testiNext?.addEventListener('click', () => goTesti(testiIndex + 1));
+  // Auto-advance
+  let testiTimer = setInterval(() => goTesti(testiIndex + 1), 6500);
+  if (testiTrack){
+    testiTrack.addEventListener('mouseenter', () => clearInterval(testiTimer));
+    testiTrack.addEventListener('mouseleave', () => { testiTimer = setInterval(() => goTesti(testiIndex + 1), 6500); });
+  }
+  window.addEventListener('resize', () => goTesti(testiIndex));
+  // Touch swipe
+  if (testiTrack){
+    let sx = 0, dx = 0, dragging = false;
+    testiTrack.addEventListener('touchstart', e => { sx = e.touches[0].clientX; dragging = true; }, { passive: true });
+    testiTrack.addEventListener('touchmove',  e => { if (!dragging) return; dx = e.touches[0].clientX - sx; }, { passive: true });
+    testiTrack.addEventListener('touchend',   () => {
+      if (!dragging) return;
+      if (Math.abs(dx) > 40) goTesti(testiIndex + (dx < 0 ? 1 : -1));
+      dragging = false; dx = 0;
+    });
+  }
+
+  // ---------- FAQ accordion ----------
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    q?.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      // Optional: close others
+      document.querySelectorAll('.faq-item.open').forEach(o => { if (o !== item) o.classList.remove('open'); });
+      item.classList.toggle('open', !wasOpen);
+    });
+  });
+
+  // ---------- Magnetic buttons ----------
+  const magneticEls = document.querySelectorAll('.magnetic');
+  magneticEls.forEach(el => {
+    let raf;
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width/2;
+      const cy = r.top + r.height/2;
+      const dx = (e.clientX - cx) * 0.25;
+      const dy = (e.clientY - cy) * 0.35;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+    });
+    el.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(raf);
+      el.style.transform = 'translate(0,0)';
+    });
+  });
+
+</script>
+
+</body>
+</html>
