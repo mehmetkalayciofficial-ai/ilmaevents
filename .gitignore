@@ -16,3 +16,5 @@ desktop.ini
 *.log
 temporary screenshots/
 *.tmp
+
+.vercel
